@@ -16,4 +16,19 @@ There are many articles about PE timestamps, their meaning, the attacker's timez
 Long story short - PE timestamps can shine a bit of light on the malware and we might try to avoid that (for whatever reason).
 
 There are multiple timestamps, this utility reads/modifes the TimeDateStamp of the COFF File Header.
-Use `--help` to show how the timestamp can be modified.
+
+## Getting Timestamp
+
+Use `--get-timestamp` to show the timestamp.
+
+## Setting Timestamp
+
+Use `--set-timestamp <TIMESTAMP>` to set the timestamp to `<TIEMSTAMP>`.
+The timestamp has to be specified as a unsigned 32 bit integer epoch time.
+
+You can also se `--set-random-timestamp` to set the timestamp to a randomly generated value.
+
+# TODO
+
+* set/get more types of timestamps
+* set/get/explore other properties of the PE file (compiler, linker, section names, etc.)

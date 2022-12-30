@@ -1,0 +1,37 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Get TS",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/target/debug/pe_randomizer.exe",
+            "args": [
+                "-f",
+                "bin\\out.exe",
+                "--get-timestamp",
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "console": "integratedTerminal"
+        },
+        // {
+        //     "name": "Set TS",
+        //     "type": "cppvsdbg",
+        //     "request": "launch",
+        //     "program": "${workspaceRoot}/target/debug/pe_randomizer.exe",
+        //     "args": [
+        //         "-f",
+        //         "bin\\test.exe",
+        //         "--set-random-timestamp",
+        //         "--out-file",
+        //         "bin\\out.exe"
+        //     ],
+        //     "stopAtEntry": false,
+        //     "cwd": "${workspaceRoot}",
+        //     "environment": [],
+        //     "console": "integratedTerminal"
+        // }
+    ]
+}

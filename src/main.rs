@@ -1,3 +1,5 @@
+use chrono::NaiveDateTime;
+use chrono::{DateTime, Utc};
 use clap::ArgGroup;
 use clap::Parser;
 use exe::Buffer;
@@ -20,7 +22,7 @@ struct Cli {
     out_file: Option<String>,
 
     /// Print the timestamp and exit.
-    #[arg(long, requires = "output-file")]
+    #[arg(long)]
     get_timestamp: bool,
 
     /// Set timestamp and exit. Specify the timestamp as an unsigned 32bit integer epoch time.
@@ -36,9 +38,20 @@ struct Cli {
     file: String,
 }
 
+fn convert_timestamp_to_utc(ts: u32) -> String {
+    let naive = NaiveDateTime::from_timestamp_opt(ts.into(), 0).unwrap();
+    let datetime: DateTime<Utc> = DateTime::from_utc(naive, Utc);
+    datetime.format("%Y-%m-%d %H:%M:%S").to_string()
+}
+
 fn main_set_timestamp(image_ro: &VecPE, ts: u32, out_file: String) {
     let mut image_rw = image_ro.clone(); // clone the original image and make it mutable
-    println!("[+] Setting timestamp to {} (0x{:x})", ts, ts);
+    println!(
+        "[+] Setting timestamp to {} (0x{:x} ({}))",
+        ts,
+        ts,
+        convert_timestamp_to_utc(ts)
+    );
     timestamp_module::set_timestamp(&mut image_rw, ts); // change the ts
     image_rw.save(out_file).unwrap(); // save the changed file with the new timestamp
 }
@@ -64,7 +77,12 @@ fn main() {
     match &cli.get_timestamp {
         true => {
             let ts = timestamp_module::get_timestamp(&image_ro);
-            println!("[+] Timestamp: {} (0x{:x})", ts, ts);
+            println!(
+                "[+] Timestamp: {} (0x{:x}) ({})",
+                ts,
+                ts,
+                convert_timestamp_to_utc(ts)
+            );
             return;
         }
         _ => {}
@@ -85,17 +103,4 @@ fn main() {
         }
         _ => {}
     }
-
-    println!("wont print");
-    // let mut image = image_ro.clone();
-
-    // let a = arch_module::get_arch(&image);
-
-    // timestamp_module::set_timestamp(&mut image, a, 42);
-    // timestamp_module::get_timestamp(&image, a);
-
-    // image.save("test/start_changed.exe").unwrap();
-
-    // let nt_header = image.get_nt_headers_64().unwrap();
-    // println!("0x{:x}", nt_header.signature);
 }
