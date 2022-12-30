@@ -5,6 +5,7 @@ use clap::Parser;
 use exe::Buffer;
 use exe::VecPE;
 use rand::Rng;
+use std::fs::File;
 
 mod arch_module;
 mod timestamp_module;
@@ -65,9 +66,17 @@ fn main_set_random_timestamp(image_ro: &VecPE, out_file: String) {
 fn main() {
     let cli = Cli::parse();
 
-    let image_ro = VecPE::from_disk_file(&cli.file).unwrap();
-
     println!("[+] Input fie: {}", &cli.file);
+
+    match File::open(&cli.file) {
+        Err(_) => {
+            println!("[!] Input file does not exist");
+            return;
+        }
+        _ => {}
+    }
+
+    let image_ro = VecPE::from_disk_file(&cli.file).unwrap();
 
     match &cli.out_file {
         Some(out_filename) => println!("[+] Output file: {}", out_filename),

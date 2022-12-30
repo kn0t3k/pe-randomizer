@@ -23,7 +23,7 @@ Use `--get-timestamp` to show the timestamp.
 
 ## Setting Timestamp
 
-Use `--set-timestamp <TIMESTAMP>` to set the timestamp to `<TIEMSTAMP>`.
+Use `--set-timestamp <TIMESTAMP>` to set the timestamp to `<TIMESTAMP>`.
 The timestamp has to be specified as a unsigned 32 bit integer epoch time.
 
 You can also se `--set-random-timestamp` to set the timestamp to a randomly generated value.
