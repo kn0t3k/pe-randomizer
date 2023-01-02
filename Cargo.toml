@@ -5,8 +5,6 @@ edition = "2021"
 authors = ["Martin Knotek"]
 description  = "A simple utility that can randomize some properties of a PE file."
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 exe = "0.5.5"
 clap = { version = "4.0.32", features = ["derive"]}

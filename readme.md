@@ -32,3 +32,4 @@ You can also se `--set-random-timestamp` to set the timestamp to a randomly gene
 
 * set/get more types of timestamps
 * set/get/explore other properties of the PE file (compiler, linker, section names, etc.)
+* add tests

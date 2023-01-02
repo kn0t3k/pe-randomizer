@@ -8,7 +8,8 @@
             "program": "${workspaceRoot}/target/debug/pe_randomizer.exe",
             "args": [
                 "-f",
-                "bin\\out.exe",
+                // "target\\debug\\randomizer_target.exe",
+                "test\\dll.dll",
                 "--get-timestamp",
             ],
             "stopAtEntry": false,
