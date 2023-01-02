@@ -30,6 +30,6 @@ You can also use `--set-random-timestamp` to set the timestamp to a randomly gen
 
 # TODO
 
-* set/get more types of timestamps
+* get more types of timestamps
 * set/get/explore other properties of the PE file (compiler, linker, section names, etc.)
 * add tests

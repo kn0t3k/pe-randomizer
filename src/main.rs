@@ -4,8 +4,8 @@ use exe::VecPE;
 
 use std::fs::File;
 
-mod arch_module;
-mod timestamp_module;
+mod arch;
+mod timestamp;
 mod utils;
 
 #[derive(Parser, Debug)]
@@ -59,14 +59,8 @@ fn main() {
 
     match &cli.get_timestamp {
         true => {
-            let ts = timestamp_module::get_timestamp(&image_ro);
+            let ts = timestamp::get_timestamps(&image_ro);
             println!("[+] Timestamps: {}", ts);
-            // println!(
-            //     "[+] Timestamp: {} (0x{:x}) ({})",
-            //     ts,
-            //     ts,
-            //     utils::convert_timestamp_to_utc(ts)
-            // );
             return;
         }
         _ => {}
@@ -74,7 +68,7 @@ fn main() {
 
     match &cli.set_timestamp {
         Some(ts) => {
-            timestamp_module::set_timestamp_save_file(&image_ro, *ts, cli.out_file.unwrap());
+            timestamp::set_timestamp_save_file(&image_ro, *ts, cli.out_file.unwrap());
             return;
         }
         _ => {}
@@ -82,7 +76,7 @@ fn main() {
 
     match &cli.set_random_timestamp {
         true => {
-            timestamp_module::set_random_timestamp(&image_ro, cli.out_file.unwrap());
+            timestamp::set_random_timestamp(&image_ro, cli.out_file.unwrap());
             return;
         }
         _ => {}
