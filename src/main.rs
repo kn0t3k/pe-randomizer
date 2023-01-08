@@ -1,48 +1,91 @@
-use clap::ArgGroup;
-use clap::Parser;
 use exe::VecPE;
-
+use inquire::{Select, Text};
 use std::fs::File;
 
-mod arch;
 mod timestamp;
 mod utils;
 
-#[derive(Parser, Debug)]
-#[command(author, version, about)]
-#[command(group(
-    ArgGroup::new("timestamp-args")
-        .required(false)
-        .args(["set_timestamp", "get_timestamp", "set_random_timestamp"]),
-))]
-struct Cli {
-    /// Name of modified file.
-    #[arg(long, short, group = "output-file")]
-    out_file: Option<String>,
+const SET_CMD: &str = "set";
+const GET_CMD: &str = "get";
+const HELP_CMD: &str = "help";
+const EXIT_CMD: &str = "exit";
+const TIMESTAMP_PROP: &str = "timestamp";
+const PROP_CMDS: [&str; 1] = [TIMESTAMP_PROP];
+const CMDS: [&str; 4] = [SET_CMD, GET_CMD, HELP_CMD, EXIT_CMD];
 
-    /// Print the timestamp and exit.
-    #[arg(long)]
-    get_timestamp: bool,
+fn handle_get(image_ro: &VecPE) {
+    let property = Select::new("What do you want to get?", PROP_CMDS.to_vec())
+        .prompt()
+        .unwrap();
 
-    /// Set timestamp and exit. Specify the timestamp as an unsigned 32bit integer epoch time.
-    #[arg(long, requires = "output-file", value_name = "TIMESTAMP")]
-    set_timestamp: Option<u32>,
+    match property {
+        TIMESTAMP_PROP => {
+            let ts = timestamp::get_timestamps(&image_ro);
+            println!("[+] Timestamps: {}", ts);
+        }
+        _ => {}
+    }
+}
 
-    /// Set the timestamp to a random value.
-    #[arg(long, requires = "output-file")]
-    set_random_timestamp: bool,
+fn handle_set(_image_ro: &VecPE) {
+    // match &cli.out_file {
+    //     Some(out_filename) => println!("[+] Output file: {}", out_filename),
+    //     None => {}
+    // }
 
-    /// Input file.
-    #[arg(long, short, group = "input-file")]
-    file: String,
+    // match &cli.set_timestamp {
+    //     Some(ts) => {
+    //         timestamp::set_timestamp_save_file(&image_ro, *ts, cli.out_file.unwrap());
+    //         return;
+    //     }
+    //     _ => {}
+    // }
+
+    // match &cli.set_random_timestamp {
+    //     true => {
+    //         timestamp::set_random_timestamp(&image_ro, cli.out_file.unwrap());
+    //         return;
+    //     }
+    //     _ => {}
+    // }
+
+    let property = Select::new("What do you want to set?", PROP_CMDS.to_vec())
+        .prompt()
+        .unwrap();
+
+    match property {
+        TIMESTAMP_PROP => {
+            // let ts = timestamp::get_timestamps(&image_ro);
+            // println!("[+] Timestamps: {}", ts);
+            todo!()
+        }
+        _ => {}
+    }
+}
+
+fn handle_help() {
+    todo!()
 }
 
 fn main() {
-    let cli = Cli::parse();
+    let current_dir = std::env::current_dir().unwrap();
+    let help_message = format!("Current directory: {}", current_dir.to_string_lossy());
 
-    println!("[+] Input fie: {}", &cli.file);
+    let ans = Text::new("Input file:")
+        .with_help_message(&help_message)
+        .prompt();
 
-    match File::open(&cli.file) {
+    let path = match ans {
+        Ok(p) => p,
+        Err(error) => {
+            println!("Error: {:?}", error);
+            String::from("")
+        }
+    };
+
+    println!("[+] Input file: {}", path);
+
+    match File::open(&path) {
         Err(_) => {
             println!("[!] Input file does not exist");
             return;
@@ -50,35 +93,27 @@ fn main() {
         _ => {}
     }
 
-    let image_ro = VecPE::from_disk_file(&cli.file).unwrap();
+    let image_ro = VecPE::from_disk_file(&path).unwrap();
 
-    match &cli.out_file {
-        Some(out_filename) => println!("[+] Output file: {}", out_filename),
-        None => {}
-    }
+    loop {
+        let c = Select::new("Enter command: ", CMDS.to_vec())
+            .prompt()
+            .unwrap();
 
-    match &cli.get_timestamp {
-        true => {
-            let ts = timestamp::get_timestamps(&image_ro);
-            println!("[+] Timestamps: {}", ts);
-            return;
-        }
-        _ => {}
-    }
-
-    match &cli.set_timestamp {
-        Some(ts) => {
-            timestamp::set_timestamp_save_file(&image_ro, *ts, cli.out_file.unwrap());
-            return;
-        }
-        _ => {}
-    }
-
-    match &cli.set_random_timestamp {
-        true => {
-            timestamp::set_random_timestamp(&image_ro, cli.out_file.unwrap());
-            return;
-        }
-        _ => {}
+        match c {
+            SET_CMD => {
+                handle_set(&image_ro);
+            }
+            GET_CMD => {
+                handle_get(&image_ro);
+            }
+            HELP_CMD => {
+                handle_help();
+            }
+            EXIT_CMD => {
+                break;
+            }
+            _ => {}
+        };
     }
 }

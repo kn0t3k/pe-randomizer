@@ -7,6 +7,6 @@ description  = "A simple utility that can randomize some properties of a PE file
 
 [dependencies]
 exe = "0.5.5"
-clap = { version = "4.0.32", features = ["derive"]}
 rand = "0.8.5"
 chrono = "0.4.23"
+inquire = "0.5.2"

@@ -4,7 +4,7 @@ use exe::{pe::VecPE, ExportDirectory};
 use exe::{Buffer, DebugDirectory, ImageDirectoryEntry, ResourceDirectory, PE};
 use rand::Rng;
 
-use crate::{timestamp, utils};
+use crate::utils;
 
 pub struct Timestamps {
     file_ts: u32,
@@ -59,7 +59,7 @@ pub fn set_timestamp_save_file(image_ro: &VecPE, ts: u32, out_file: String) {
         ts,
         utils::convert_timestamp_to_utc(ts)
     );
-    timestamp::set_timestamp_mut(&mut image_rw, ts); // change the ts
+    set_timestamp_mut(&mut image_rw, ts); // change the ts
     image_rw.save(out_file).unwrap(); // save the changed file with the new timestamp
 }
 
